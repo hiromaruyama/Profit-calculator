@@ -29,6 +29,8 @@ with left:
 
 
     Start=st.button("Calculate Required Price")
+    
+    st.markdown("View source code: [GitHub Repository](https://github.com/hiromaruyama/Profit-calculator.git)")
 
 
 # Calculations 
