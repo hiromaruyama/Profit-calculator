@@ -28,7 +28,7 @@ with left:
     st.markdown("<hr style='margin: 1px 0px;'>", unsafe_allow_html=True)
 
 
-    Start=st.button("Calculate Required Price")
+    Start=st.button("Calculate")
     
     st.markdown("View source code: [GitHub Repository](https://github.com/hiromaruyama/Profit-calculator.git)")
 
