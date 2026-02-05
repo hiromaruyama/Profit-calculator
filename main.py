@@ -17,9 +17,10 @@ with left:
     st.write("Total Revenue: $", f'{revenue:,.2f}')
     st.markdown("<hr style='margin: 1px 0px;'>", unsafe_allow_html=True)
 
-    cogs_amount = st.number_input("Cost of Goods Sold (COGS): ", min_value=0.0, value=0.0, step=1.0, key="cogs")
+    unit_cogs_price = st.number_input("Unit Cost of Goods Sold (COGS): ", min_value=0.0, value=0.0, step=1.0, key="cogs")
     # Calculate actual COGS
-    st.write("COGS cost: $", f'{cogs_amount:,.2f}')
+    net_cogs = unit_cogs_price * amount_sold
+    st.write("COGS cost: $", f'{net_cogs:,.2f}')
     st.markdown("<hr style='margin: 1px 0px;'>", unsafe_allow_html=True)
 
     sga = st.number_input("Selling, General & Administrative Expenses (SG&A)", min_value=0.0, value=0.0, step=1.0, key="sga")
@@ -28,8 +29,8 @@ with left:
     st.markdown("<hr style='margin: 1px 0px;'>", unsafe_allow_html=True)
 
 
-    Start=st.button("Calculate")
-    
+    Start=st.button("Calculate Required Price")
+
     st.markdown("View source code: [GitHub Repository](https://github.com/hiromaruyama/Profit-calculator.git)")
 
 
@@ -37,7 +38,7 @@ with left:
 with right: 
     if Start:
         st.header("Results")
-        profit = unit_price * amount_sold - cogs_amount - sga
+        profit = unit_price * amount_sold - net_cogs - sga
         net_margin = (profit / (unit_price * amount_sold) * 100) if revenue != 0 else 0.0
 
         st.markdown(f"<div style='font-size:22px;'>Net Profit ($ per month): ${profit:,.2f}</div>", unsafe_allow_html=True)
@@ -45,11 +46,11 @@ with right:
         st.markdown("</div>", unsafe_allow_html=True)
 
         wf_labels = ['Revenue', 'COGS', 'SG&A', 'Profit']
-        wf_values = [revenue, -cogs_amount, -sga, profit]
-        bottoms = [0,revenue, revenue - cogs_amount, 0]
+        wf_values = [revenue, -net_cogs, -sga, profit]
+        bottoms = [0,revenue, revenue - net_cogs, 0]
 
-        # Create waterfall chart with 8 inch width and 4 inch height
-        fig, ax = plt.subplots(figsize=(8, 4))
+        # Create waterfall chart with 9 inch width and 4 inch height
+        fig, ax = plt.subplots(figsize=(9, 4))
 
         colors = ["#244FC6", "#E15759","#3EE307", "#EBE407"]
 
@@ -69,7 +70,7 @@ with right:
         # Revenue
         ax.text(0, wf_values[0]/2,format_currency(revenue), ha='center', va='bottom', fontsize=10)
         #COGS
-        ax.text(1, bottoms[1]+wf_values[1]/2, f"-{format_currency(cogs_amount)}", ha='center', va='center', fontsize=10)
+        ax.text(1, bottoms[1]+wf_values[1]/2, f"-{format_currency(net_cogs)}", ha='center', va='center', fontsize=10)
         #SG&A
         ax.text(2, wf_values[2]/2+bottoms[2], f"-{format_currency(sga)}", ha='center', va='center', fontsize=10)
         
@@ -77,3 +78,5 @@ with right:
         ax.text(3, wf_values[3]/2+bottoms[3], f"{format_currency(profit)}", ha='center', va='center', fontsize=10)
 
         st.pyplot(fig)
+
+        
